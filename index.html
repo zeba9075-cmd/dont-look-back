@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DON'T LOOK BACK</title>
+<style>
+body {
+  margin: 0;
+  background: black;
+  color: #e5e5e5;
+  font-family: monospace;
+}
+#game {
+  max-width: 700px;
+  margin: auto;
+  padding: 30px;
+  line-height: 1.6;
+}
+.choice {
+  margin-top: 15px;
+  cursor: pointer;
+  color: #9ae6b4;
+}
+.choice:hover { text-decoration: underline; }
+#warning {
+  color: #f87171;
+  display: none;
+  margin-top: 20px;
+}
+</style>
+</head>
+<body>
+
+<div id="game"></div>
+<div id="warning">You shouldn't have looked back.</div>
+
+<script>
+let lookedBack = 0;
+const game = document.getElementById("game");
+const warning = document.getElementById("warning");
+
+function scene(text, choices) {
+  game.innerHTML = "<p>" + text + "</p>";
+  choices.forEach(c => {
+    const div = document.createElement("div");
+    div.className = "choice";
+    div.innerText = c.text;
+    div.onclick = c.action;
+    game.appendChild(div);
+  });
+}
+
+function lookBack() {
+  lookedBack++;
+  warning.style.display = "block";
+  setTimeout(() => warning.style.display = "none", 1500);
+
+  if (lookedBack >= 3) {
+    scene(
+      "The mirror shows a figure where you should be. You are no longer alone.",
+      [{ text: "Accept it.", action: endingWaiting }]
+    );
+  } else {
+    startHall();
+  }
+}
+
+function startHall() {
+  scene(
+    "You stand in the ancestral hall. The lights flicker. You hear footsteps behind you.",
+    [
+      { text: "Do NOT look back.", action: kitchen },
+      { text: "Look back.", action: lookBack }
+    ]
+  );
+}
+
+function kitchen() {
+  scene(
+    "The kitchen smells of old tea. A radio hums softly.",
+    [
+      { text: "Listen to the radio.", action: radio },
+      { text: "Return to the hall.", action: startHall }
+    ]
+  );
+}
+
+function radio() {
+  scene(
+    "The radio whispers your name. The sound feels too close.",
+    [
+      { text: "Turn it off.", action: bedroom },
+      { text: "Look behind you.", action: lookBack }
+    ]
+  );
+}
+
+function bedroom() {
+  scene(
+    "Your childhood bedroom. A covered mirror leans against the wall.",
+    [
+      { text: "Sit silently.", action: endingAcceptance },
+      { text: "Uncover the mirror.", action: lookBack }
+    ]
+  );
+}
+
+function endingAcceptance() {
+  scene("You sit down. The house exhales. Silence.", []);
+}
+
+function endingWaiting() {
+  scene("You are no longer being watched. You are the one who waits.", []);
+}
+
+startHall();
+</script>
+</body>
+</html>
